@@ -1,0 +1,23 @@
+{
+  "name": "your-app-name",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.example.klarte",
+    "productName": "Klarte_DataUpdate",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    }
+  }
+}

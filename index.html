@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Instagram Updater</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #progress-container { width: 100%; background: #ddd; border-radius: 5px; margin-top: 20px; }
+    #progress-bar {
+      width: 0%;
+      height: 30px;
+      background: #28a745;
+      color: white;
+      text-align: center;
+      line-height: 30px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Instagram Profile Updater</h1>
+  <button id="run-btn">Run</button>
+  <h1>Status:</h1>
+  <div id="log">Waiting...</div>
+  <script>
+    const log = document.getElementById('log');
+    log.textContent = "Script started";
+
+    // Example log from preload or Node
+    const fs = require('fs');
+    fs.writeFileSync("test.txt", "It works!");
+    log.textContent = "File written";
+  </script>
+
+  <div id="progress-container">
+    <div id="progress-bar">0%</div>
+  </div>
+
+  <div id="skipped-list" style="display:none;">
+    <h3>Skipped Profiles:</h3>
+    <ul id="skipped-ul"></ul>
+  </div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    document.getElementById('run-btn').addEventListener('click', () => {
+      ipcRenderer.send('run-script');
+      document.getElementById('run-btn').disabled = true;
+    });
+
+    ipcRenderer.on('progress-update', (event, percent) => {
+      const bar = document.getElementById('progress-bar');
+      bar.style.width = percent + '%';
+      bar.textContent = percent + '%';
+    });
+
+    ipcRenderer.on('skipped-start', () => {
+      document.getElementById('skipped-list').style.display = 'block';
+      document.getElementById('skipped-ul').innerHTML = '';
+    });
+
+    ipcRenderer.on('skipped-entry', (event, username) => {
+      const li = document.createElement('li');
+      li.textContent = username;
+      document.getElementById('skipped-ul').appendChild(li);
+    });
+
+    ipcRenderer.on('script-complete', () => {
+      alert("Script execution completed!");
+      document.getElementById('run-btn').disabled = false;
+    });
+  </script>
+</body>
+</html>
